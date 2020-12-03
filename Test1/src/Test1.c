@@ -1,0 +1,280 @@
+/* =============================================================================
+   Test 1
+   version: v0.9b (2/12/2020)
+   author: mvac7
+   description:
+      Test SDCC JOYSTICK MSX-DOS Library
+============================================================================= */
+
+#include "../include/newTypes.h"
+#include "../include/msxSystemVars.h"
+#include "../include/msxBIOS.h"
+#include "../include/msxDOS.h"
+
+#include "../include/memory.h"
+#include "../include/textmode.h"
+#include "../include/keyboard.h"
+#include "../include/joystick.h"
+
+#define  SYSTEM 0x0005  // MSX-DOS entry
+
+#define  HALT __asm halt __endasm   //wait for the next interrupt
+
+
+#define HINT     0x0038 //Z80 INT (RST $38)  · IM 1 interrupts entry poin
+
+#define HKEYI	 0xFD9A //Hook KEYI. Interrupt handler device other than the VDP. (RS-232C, MSX-Midi, etc) 
+#define HTIMI	 0xFD9F //Hook TIMI. Interrupt handler VDP VBLANK
+
+
+
+
+void test();
+
+void printTrig(signed char value);
+void printDIR(char A);
+
+void System(char code);
+
+
+
+// constants  ------------------------------------------------------------------
+
+const char text01[] = "Test1 SDCC JOYSTICK MSX-DOS Lib";
+const char text02[] = "v0.9b (02/12/2020)";
+
+// Functions -------------------------------------------------------------------
+
+
+
+//
+void main(void)
+{
+  //char colorInk=0;
+  //char colorBG=0;
+  //char colorBDR=0;
+  //char scrcolumns=0;
+  
+  //colorInk=PEEK(FORCLR);
+  //colorBG=PEEK(BAKCLR);
+  //colorBDR=PEEK(BDRCLR);
+  //scrcolumns=PEEK(LINLEN);
+  
+  //COLOR(LIGHT_GREEN,DARK_GREEN,DARK_GREEN);      
+  //SCREEN0();
+  //WIDTH(40);
+  
+  //disable_isr();
+  
+  CLS();
+    
+  test();  
+
+  //enable_isr();
+  
+//EXIT MSXDOS ------------------------------------------------------------------
+  //put the screen as it was.
+  //COLOR(colorInk,colorBG,colorBDR);
+
+  //if(scrcolumns<33) SCREEN1();
+  
+  CLS();
+  
+  KillBuffer();
+    
+  System(_TERM0); 
+//--------------------------------------------------------------------- end EXIT    
+}
+
+
+
+// call system functions 
+// see MSX Assembly Page > MSX-DOS 2 function calls
+// http://map.grauw.nl/resources/dos2_functioncalls.php
+void System(char code) __naked
+{
+code;
+__asm
+	push IX
+	ld   IX,#0
+	add  IX,SP
+
+	ld   C,4(IX)
+	call SYSTEM
+
+	pop  IX
+    ret
+__endasm; 
+}
+
+
+
+// TEST ###############################################################
+void test()
+{
+  char isExit = 0;
+  
+  char dir=0;
+  char dirCURSOR=0;
+  char dirJOY1=0;
+  char dirJOY2=0;
+  
+  signed char button=0;
+  signed char spaceBar=0;
+  signed char but1JOY1=0;
+  signed char but2JOY1=0;
+  signed char but1JOY2=0;
+  signed char but2JOY2=0;
+      
+  LOCATE(0,0);
+  PRINT(text01);
+  LOCATE(0,1);
+  PRINT(text02);
+  PRINT("\n\nHold down ESC key to exit to DOS");
+  
+  LOCATE(0,5);
+  PRINT(">Test STICK() & STRIG()");
+  
+  LOCATE(3,7);
+  PRINT("*Cursor Keys");
+  LOCATE(4,8);
+  PRINT("STICK(0)= ");
+  LOCATE(4,9);
+  PRINT("STRIG(0)=");  
+  
+  LOCATE(3,11);
+  PRINT("*Joystick A");
+  LOCATE(4,12);
+  PRINT("STICK(1)= ");
+  LOCATE(4,13);
+  PRINT("STRIG(1)=");
+  LOCATE(4,14);
+  PRINT("STRIG(3)=");
+  
+  LOCATE(3,16);
+  PRINT("*Joystick B");
+  LOCATE(4,17);
+  PRINT("STICK(2)=");
+  LOCATE(4,18);
+  PRINT("STRIG(2)=");
+  LOCATE(4,19);
+  PRINT("STRIG(4)=");
+    
+
+  while(isExit<60)
+  {
+    HALT;
+    
+    if (!(GetKeyMatrix(7)&Bit2)) isExit++;
+    else isExit=0;
+    
+    //------------------------- cursor keys
+    dir = STICK(0);
+    if(dirCURSOR!=dir){
+        LOCATE(14,8);
+        printDIR(dir);
+        //PrintFNumber(dir,32,3);
+        dirCURSOR=dir;
+    }
+    
+    button=STRIG(0);
+    if(spaceBar!=button){
+        spaceBar = button;
+        LOCATE(14,9);    
+        printTrig(spaceBar);
+    }
+      
+    //------------------------- joy1
+    dir = STICK(1);
+    if(dirJOY1!=dir){
+        LOCATE(14,12);
+        printDIR(dir);
+        //PrintFNumber(dir,32,3);
+        dirJOY1=dir;
+    }
+    
+    button=STRIG(1);
+    if(but1JOY1!=button){
+        but1JOY1 = button;
+        LOCATE(14,13);
+        printTrig(but1JOY1); 
+    }
+    
+    button=STRIG(3);
+    if(but2JOY1!=button){
+        but2JOY1 = button;
+        LOCATE(14,14);
+        printTrig(but2JOY1); 
+    }   
+    
+    //------------------------- joy2
+    dir = STICK(2);
+    if(dirJOY2!=dir){
+        LOCATE(14,17);
+        printDIR(dir);
+        //PrintFNumber(dir,32,3);
+        dirJOY2=dir;
+    }    
+       
+    button=STRIG(2);
+    if(but1JOY2!=button){
+        but1JOY2 = button;
+        LOCATE(14,18);
+        printTrig(but1JOY2); 
+    }
+    
+    button=STRIG(4);
+    if(but2JOY2!=button){
+        but2JOY2 = button;
+        LOCATE(14,19);
+        printTrig(but2JOY2); 
+    }
+   
+  }
+
+}
+
+
+
+void printTrig(signed char value)
+{
+  if(value<0) PRINT("pressed");
+  else PRINT("       ");
+}
+
+
+
+void printDIR(char A)
+{
+  switch (A) 
+  {
+    case 0:
+      PRINT("            "); 
+      break;
+    case 1:
+      PRINT("Up          ");  
+      break;
+    case 2:
+      PRINT("Up & Right  ");  
+      break;
+    case 3:
+      PRINT("Right       ");  
+      break;
+    case 4:
+      PRINT("Down & Right");  
+      break;
+    case 5:
+      PRINT("Down        ");  
+      break;
+    case 6:
+      PRINT("Down & Left ");  
+      break;
+    case 7:
+      PRINT("Left        ");  
+      break;
+    case 8:
+      PRINT("Up & Left   ");  
+      break;
+  }
+}
+
