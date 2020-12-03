@@ -1,8 +1,6 @@
 # SDCC Joystick MSX-DOS Functions Library
 
-Version: 1.0
-
-Author: mvac7 mvac7303b@gmail.com
+Author: mvac7 [mvac7303b@gmail.com]
 
 Architecture: MSX
 
