@@ -1,11 +1,10 @@
 /* =============================================================================
-   SDCC Joystick MSX-DOS Functions Library
+   Joystick MSX-DOS SDCC Library (fR3eL)
    Version: 1.0
    Author: mvac7
    Architecture: MSX
    Format: C Object (SDCC .rel)
    Programming language: C and z80 assembler
-   mail: mvac7303b@gmail.com
 
    Description:
      Open Source library with basic functions for reading joystick controllers 

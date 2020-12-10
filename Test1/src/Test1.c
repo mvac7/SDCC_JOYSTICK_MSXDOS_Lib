@@ -50,34 +50,13 @@ const char text02[] = "v0.9b (02/12/2020)";
 //
 void main(void)
 {
-  //char colorInk=0;
-  //char colorBG=0;
-  //char colorBDR=0;
-  //char scrcolumns=0;
-  
-  //colorInk=PEEK(FORCLR);
-  //colorBG=PEEK(BAKCLR);
-  //colorBDR=PEEK(BDRCLR);
-  //scrcolumns=PEEK(LINLEN);
-  
-  //COLOR(LIGHT_GREEN,DARK_GREEN,DARK_GREEN);      
-  //SCREEN0();
-  //WIDTH(40);
-  
-  //disable_isr();
   
   CLS();
     
   test();  
 
-  //enable_isr();
   
 //EXIT MSXDOS ------------------------------------------------------------------
-  //put the screen as it was.
-  //COLOR(colorInk,colorBG,colorBDR);
-
-  //if(scrcolumns<33) SCREEN1();
-  
   CLS();
   
   KillBuffer();
@@ -173,7 +152,6 @@ void test()
     if(dirCURSOR!=dir){
         LOCATE(14,8);
         printDIR(dir);
-        //PrintFNumber(dir,32,3);
         dirCURSOR=dir;
     }
     
@@ -189,7 +167,6 @@ void test()
     if(dirJOY1!=dir){
         LOCATE(14,12);
         printDIR(dir);
-        //PrintFNumber(dir,32,3);
         dirJOY1=dir;
     }
     
@@ -212,7 +189,6 @@ void test()
     if(dirJOY2!=dir){
         LOCATE(14,17);
         printDIR(dir);
-        //PrintFNumber(dir,32,3);
         dirJOY2=dir;
     }    
        
