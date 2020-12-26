@@ -17,7 +17,7 @@ Use them for developing MSX applications using Small Device C Compiler (SDCC).
 
 This library uses functions from the MSX BIOS through interslot calls (CALSLT), so that they can be used in MSXDOS applications.
 
-Two applications are included in the source code for testing and learning purposes.
+In the source code (\examples), two applications are included for testing and learning purposes.
 
 This library is part of the [MSX fR3eL Project](https://github.com/mvac7/SDCC_MSX_fR3eL).
 
@@ -48,6 +48,7 @@ I want to give a special thanks to all those who freely share their knowledge wi
 * Marq/Lieves!Tuore > [Marq](http://www.kameli.net/marq/) [Lieves!Tuore](http://www.kameli.net/lt/)
 * [Fubukimaru](https://github.com/Fubukimaru) > [Blog](http://www.gamerachan.org/fubu/)
 * Andrear > [Blog](http://andrear.altervista.org/home/msxsoftware.php)
+* Ramones > [MSXblog](https://www.msxblog.es/tutoriales-de-programacion-en-ensamblador-ramones/) - [MSXbanzai](http://msxbanzai.tni.nl/dev/faq.html)
 * Sapphire/Z80ST > [WEB](http://z80st.auic.es/)
 * Fernando García > [youTube](https://www.youtube.com/user/bitvision)
 * Eric Boez > [gitHub](https://github.com/ericb59)
