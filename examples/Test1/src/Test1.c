@@ -148,14 +148,14 @@ void test()
     else isExit=0;
     
     //------------------------- cursor keys
-    dir = STICK(0);
+    dir = STICK(CURSORKEYS);
     if(dirCURSOR!=dir){
         LOCATE(14,8);
         printDIR(dir);
         dirCURSOR=dir;
     }
     
-    button=STRIG(0);
+    button=STRIG(KEYBOARD_BUTTON);
     if(spaceBar!=button){
         spaceBar = button;
         LOCATE(14,9);    
@@ -163,21 +163,21 @@ void test()
     }
       
     //------------------------- joy1
-    dir = STICK(1);
+    dir = STICK(JOYSTICKA);
     if(dirJOY1!=dir){
         LOCATE(14,12);
         printDIR(dir);
         dirJOY1=dir;
     }
     
-    button=STRIG(1);
+    button=STRIG(JOYSTICKA_BUTTONA);
     if(but1JOY1!=button){
         but1JOY1 = button;
         LOCATE(14,13);
         printTrig(but1JOY1); 
     }
     
-    button=STRIG(3);
+    button=STRIG(JOYSTICKA_BUTTONB);
     if(but2JOY1!=button){
         but2JOY1 = button;
         LOCATE(14,14);
@@ -185,21 +185,21 @@ void test()
     }   
     
     //------------------------- joy2
-    dir = STICK(2);
+    dir = STICK(JOYSTICKB);
     if(dirJOY2!=dir){
         LOCATE(14,17);
         printDIR(dir);
         dirJOY2=dir;
     }    
        
-    button=STRIG(2);
+    button=STRIG(JOYSTICKB_BUTTONA);
     if(but1JOY2!=button){
         but1JOY2 = button;
         LOCATE(14,18);
         printTrig(but1JOY2); 
     }
     
-    button=STRIG(4);
+    button=STRIG(JOYSTICKB_BUTTONB);
     if(but2JOY2!=button){
         but2JOY2 = button;
         LOCATE(14,19);
@@ -214,41 +214,41 @@ void test()
 
 void printTrig(signed char value)
 {
-  if(value<0) PRINT("pressed");
+  if(value==BUTTON_PRESSED) PRINT("pressed");
   else PRINT("       ");
 }
 
 
 
-void printDIR(char A)
+void printDIR(char state)
 {
-  switch (A) 
+  switch (state) 
   {
-    case 0:
+    case JOYSTICK_INACTIVE:
       PRINT("            "); 
       break;
-    case 1:
+    case JOYSTICK_UP:
       PRINT("Up          ");  
       break;
-    case 2:
+    case JOYSTICK_UP_RIGHT:
       PRINT("Up & Right  ");  
       break;
-    case 3:
+    case JOYSTICK_RIGHT:
       PRINT("Right       ");  
       break;
-    case 4:
+    case JOYSTICK_DOWN_RIGHT:
       PRINT("Down & Right");  
       break;
-    case 5:
+    case JOYSTICK_DOWN:
       PRINT("Down        ");  
       break;
-    case 6:
+    case JOYSTICK_DOWN_LEFT:
       PRINT("Down & Left ");  
       break;
-    case 7:
+    case JOYSTICK_LEFT:
       PRINT("Left        ");  
       break;
-    case 8:
+    case JOYSTICK_UP_LEFT:
       PRINT("Up & Left   ");  
       break;
   }
