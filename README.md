@@ -1,7 +1,7 @@
 # Joystick MSX-DOS SDCC Library (fR3eL Project)
 
 ```
-Author: mvac7 [mvac7303b@gmail.com]
+Author: mvac7 (aka aorante)
 Architecture: MSX
 Format: C Object (SDCC .rel)
 Programming language: C and Z80 assembler
@@ -29,30 +29,6 @@ Enjoy it!
 
 * Small Device C Compiler (SDCC) v3.9 http://sdcc.sourceforge.net/
 * Hex2bin v2.5 http://hex2bin.sourceforge.net/ 
-
-
-
-## Acknowledgments
-  
-I want to give a special thanks to all those who freely share their knowledge with the MSX developer community.
-
-* Avelino Herrera > [WEB](http://msx.atlantes.org/index_es.html)
-* Nerlaska > [Blog](http://albertodehoyonebot.blogspot.com.es)
-* Marq/Lieves!Tuore > [Marq](http://www.kameli.net/marq/) [Lieves!Tuore](http://www.kameli.net/lt/)
-* Fubukimaru [gitHub](https://github.com/Fubukimaru) > [Blog](http://www.gamerachan.org/fubu/)
-* Andrear > [Blog](http://andrear.altervista.org/home/msxsoftware.php)
-* Ramones > [MSXblog](https://www.msxblog.es/tutoriales-de-programacion-en-ensamblador-ramones/) - [MSXbanzai](http://msxbanzai.tni.nl/dev/faq.html)
-* Sapphire/Z80ST > [WEB](http://z80st.auic.es/)
-* BitVision > [youTube](http://www.z80st.es/cursos/bitvision-assembler)
-* Eric Boez > [gitHub](https://github.com/ericb59)
-* MSX Assembly Page > [WEB](http://map.grauw.nl/resources/msxbios.php)
-* Portar MSX Tech Doc > [WEB](http://nocash.emubase.de/portar.htm)
-* MSX Resource Center > [WEB](http://www.msx.org/)
-* Karoshi MSX Community (RIP 2007-2020)
-* BlueMSX emulator >> [WEB](http://www.bluemsx.com/)
-* OpenMSX emulator >> [WEB](http://openmsx.sourceforge.net/)
-* Meisei emulator >> ?
-
 
 
 ## Definitions
@@ -136,30 +112,31 @@ value | state
 
 #### Example
   
-```
-char joyval;
-joyval = STICK(JOYSTICKA);
-
-if (joyval!=JOYSTICK_INACTIVE){  
-  switch (joyval) 
-  {     
-    case JOYSTICK_UP:
-      moveUp();
-      break;
-
-    case JOYSTICK_RIGHT:              
-      moveRight();
-      break;
-
-    case JOYSTICK_DOWN:
-      moveDown();
-      break;
-
-    case JOYSTICK_LEFT:
-      moveDown();
-      break;   
+```c
+  char joyval;
+  
+  joyval = STICK(JOYSTICKA);
+  
+  if (joyval!=JOYSTICK_INACTIVE){  
+    switch (joyval) 
+    {     
+      case JOYSTICK_UP:
+        moveUp();
+        break;
+  
+      case JOYSTICK_RIGHT:              
+        moveRight();
+        break;
+  
+      case JOYSTICK_DOWN:
+        moveDown();
+        break;
+  
+      case JOYSTICK_LEFT:
+        moveDown();
+        break;   
+    }
   }
-}
 ```
 
 
@@ -178,10 +155,10 @@ Returns the trigger status.
 value | button
 ----- | ------
 0 | space key
-1 | button 1 joy A
-2 | button 1 joy B
-3 | button 2 joy A
-4 | button 2 joy B
+1 | button 1 joystick 1
+2 | button 1 joystick 2
+3 | button 2 joystick 1
+4 | button 2 joystick 2
                     
 
 #### Output: 
@@ -196,10 +173,11 @@ value | description
 
 #### Example
   
-```
-signed char press;
-press = STRIG(KEYBOARD_BUTTON); //spacebar
-if (press==BUTTON_UNPRESSED) press = STRIG(JOYSTICKA_BUTTONA);
-if (press==BUTTON_PRESSED) Fire();
+```c
+  signed char press;
+  
+  press = STRIG(KEYBOARD_BUTTON); //spacebar
+  if (press==BUTTON_UNPRESSED) press = STRIG(JOYSTICKA_BUTTONA);
+  if (press==BUTTON_PRESSED) Fire();
 ```
 
