@@ -1,9 +1,14 @@
 /* =============================================================================
-   Test 1
-   version: v0.9b (2/12/2020)
-   author: mvac7
-   description:
+   Test1 JOYSTICK MSX-DOS Library
+   Version: v1.0b (10/February/2023)
+   Author: mvac7
+   
+   Description:
       Test SDCC JOYSTICK MSX-DOS Library
+      
+   History of versions:
+   - v1.0b (10/February/2023) For v2 of the library and log format output 
+   - v0.9b (2/12/2020)    
 ============================================================================= */
 
 #include "../include/newTypes.h"
@@ -21,31 +26,27 @@
 #define  HALT __asm halt __endasm   //wait for the next interrupt
 
 
-#define HINT     0x0038 //Z80 INT (RST $38)  · IM 1 interrupts entry poin
 
-#define HKEYI	 0xFD9A //Hook KEYI. Interrupt handler device other than the VDP. (RS-232C, MSX-Midi, etc) 
-#define HTIMI	 0xFD9F //Hook TIMI. Interrupt handler VDP VBLANK
-
-
-
+// -----------------------------------------------------------------------------
 
 void test();
 
-void printTrig(signed char value);
-void printDIR(char A);
+void printTrig(char Ntrigger);
+void printDIR(char Njoy, char state);
 
 void System(char code);
 
 
 
-// constants  ------------------------------------------------------------------
+// ----------------------------------------------------------------------------- constants
 
-const char text01[] = "Test1 SDCC JOYSTICK MSX-DOS Lib";
-const char text02[] = "v0.9b (02/12/2020)";
+const char text01[] = "Test1 SDCC JOYSTICK MSX-DOS Lib\n";
+const char text02[] = "v1.0b (10/February/2023)\n";
+const char text03[] = "by mvac7/303bcn\n";
+const char text04[] = "Test of STICK and STRING.\n";
 
-// Functions -------------------------------------------------------------------
 
-
+// ----------------------------------------------------------------------------- Functions
 
 //
 void main(void)
@@ -57,8 +58,7 @@ void main(void)
 
   
 //EXIT MSXDOS ------------------------------------------------------------------
-  CLS();
-  
+ 
   KillBuffer();
     
   System(_TERM0); 
@@ -99,46 +99,20 @@ void test()
   char dirJOY2=0;
   
   signed char button=0;
-  signed char spaceBar=0;
-  signed char but1JOY1=0;
-  signed char but2JOY1=0;
-  signed char but1JOY2=0;
-  signed char but2JOY2=0;
+  boolean spaceBar_pressed=false;
+  boolean but1JOY1_pressed=false;
+  boolean but2JOY1_pressed=false;
+  boolean but1JOY2_pressed=false;
+  boolean but2JOY2_pressed=false;
+
       
-  LOCATE(0,0);
   PRINT(text01);
-  LOCATE(0,1);
   PRINT(text02);
-  PRINT("\n\nHold down ESC key to exit to DOS");
+  PRINT(text03);
+  PRINT(text04);
+  PRINT("Hold down [ESC] key to return to DOS\n");
   
-  LOCATE(0,5);
-  PRINT(">Test STICK() & STRIG()");
-  
-  LOCATE(3,7);
-  PRINT("*Cursor Keys");
-  LOCATE(4,8);
-  PRINT("STICK(0)= ");
-  LOCATE(4,9);
-  PRINT("STRIG(0)=");  
-  
-  LOCATE(3,11);
-  PRINT("*Joystick A");
-  LOCATE(4,12);
-  PRINT("STICK(1)= ");
-  LOCATE(4,13);
-  PRINT("STRIG(1)=");
-  LOCATE(4,14);
-  PRINT("STRIG(3)=");
-  
-  LOCATE(3,16);
-  PRINT("*Joystick B");
-  LOCATE(4,17);
-  PRINT("STICK(2)=");
-  LOCATE(4,18);
-  PRINT("STRIG(2)=");
-  LOCATE(4,19);
-  PRINT("STRIG(4)=");
-    
+   
 
   while(isExit<60)
   {
@@ -149,108 +123,160 @@ void test()
     
     //------------------------- cursor keys
     dir = STICK(CURSORKEYS);
-    if(dirCURSOR!=dir){
-        LOCATE(14,8);
-        printDIR(dir);
-        dirCURSOR=dir;
-    }
+    if(dir!=JOYSTICK_INACTIVE){
+        if(dir!=dirCURSOR)
+        {
+            printDIR(CURSORKEYS, dir);
+            dirCURSOR=dir;
+        }
+    }else dirCURSOR=JOYSTICK_INACTIVE;
     
-    button=STRIG(KEYBOARD_BUTTON);
-    if(spaceBar!=button){
-        spaceBar = button;
-        LOCATE(14,9);    
-        printTrig(spaceBar);
-    }
+   
+    button=STRIG(SPACEBAR_BUTTON);
+    if(button==BUTTON_PRESSED)
+    {
+        if(!spaceBar_pressed){
+            printTrig(SPACEBAR_BUTTON);
+            spaceBar_pressed = true;
+        }    
+    }else spaceBar_pressed = false; 
+    
       
     //------------------------- joy1
     dir = STICK(JOYSTICKA);
-    if(dirJOY1!=dir){
-        LOCATE(14,12);
-        printDIR(dir);
-        dirJOY1=dir;
-    }
-    
+    if(dir!=JOYSTICK_INACTIVE){
+        if(dir!=dirJOY1)
+        {
+            printDIR(JOYSTICKA, dir);
+            dirJOY1=dir;
+        }
+    }else dirJOY1=JOYSTICK_INACTIVE;
+   
     button=STRIG(JOYSTICKA_BUTTONA);
-    if(but1JOY1!=button){
-        but1JOY1 = button;
-        LOCATE(14,13);
-        printTrig(but1JOY1); 
-    }
+    if(button==BUTTON_PRESSED)
+    {
+        if(!but1JOY1_pressed){
+            printTrig(JOYSTICKA_BUTTONA);
+            but1JOY1_pressed = true;
+        }    
+    }else but1JOY1_pressed = false;
     
     button=STRIG(JOYSTICKA_BUTTONB);
-    if(but2JOY1!=button){
-        but2JOY1 = button;
-        LOCATE(14,14);
-        printTrig(but2JOY1); 
-    }   
+    if(button==BUTTON_PRESSED)
+    {
+        if(!but2JOY1_pressed){
+            printTrig(JOYSTICKA_BUTTONB);
+            but2JOY1_pressed = true;
+        }    
+    }else but2JOY1_pressed = false;
+    
+
     
     //------------------------- joy2
     dir = STICK(JOYSTICKB);
-    if(dirJOY2!=dir){
-        LOCATE(14,17);
-        printDIR(dir);
-        dirJOY2=dir;
-    }    
-       
+    if(dir!=JOYSTICK_INACTIVE){
+        if(dir!=dirJOY2)
+        {
+            printDIR(JOYSTICKB, dir);
+            dirJOY2=dir;
+        }
+    }else dirJOY2=JOYSTICK_INACTIVE;
+    
     button=STRIG(JOYSTICKB_BUTTONA);
-    if(but1JOY2!=button){
-        but1JOY2 = button;
-        LOCATE(14,18);
-        printTrig(but1JOY2); 
-    }
+    if(button==BUTTON_PRESSED)
+    {
+        if(!but1JOY2_pressed){
+            printTrig(JOYSTICKB_BUTTONA);
+            but1JOY2_pressed = true;
+        }    
+    }else but1JOY2_pressed = false;
     
     button=STRIG(JOYSTICKB_BUTTONB);
-    if(but2JOY2!=button){
-        but2JOY2 = button;
-        LOCATE(14,19);
-        printTrig(but2JOY2); 
-    }
+    if(button==BUTTON_PRESSED)
+    {
+        if(!but2JOY2_pressed){
+            printTrig(JOYSTICKB_BUTTONB);
+            but2JOY2_pressed = true;
+        }    
+    }else but2JOY2_pressed = false;
+   
    
   }
+  
+  PRINT("End Test");
 
 }
 
 
 
-void printTrig(signed char value)
+
+void printTrig(char Ntrigger)
 {
-  if(value==BUTTON_PRESSED) PRINT("pressed");
-  else PRINT("       ");
-}
-
-
-
-void printDIR(char state)
-{
-  switch (state) 
+  switch (Ntrigger) 
   {
-    case JOYSTICK_INACTIVE:
-      PRINT("            "); 
+    case SPACEBAR_BUTTON:
+      PRINT("Keyboard   - [Spacebar]");  
       break;
-    case JOYSTICK_UP:
-      PRINT("Up          ");  
+      
+    case JOYSTICKA_BUTTONA:
+      PRINT("Joystick 1 - [Button 1]");  
       break;
-    case JOYSTICK_UP_RIGHT:
-      PRINT("Up & Right  ");  
+    
+    case JOYSTICKA_BUTTONB:
+      PRINT("Joystick 1 - [Button 2]");  
       break;
-    case JOYSTICK_RIGHT:
-      PRINT("Right       ");  
+
+    case JOYSTICKB_BUTTONA:
+      PRINT("Joystick 2 - [Button 1]");  
       break;
-    case JOYSTICK_DOWN_RIGHT:
-      PRINT("Down & Right");  
-      break;
-    case JOYSTICK_DOWN:
-      PRINT("Down        ");  
-      break;
-    case JOYSTICK_DOWN_LEFT:
-      PRINT("Down & Left ");  
-      break;
-    case JOYSTICK_LEFT:
-      PRINT("Left        ");  
-      break;
-    case JOYSTICK_UP_LEFT:
-      PRINT("Up & Left   ");  
+    
+    case JOYSTICKB_BUTTONB:
+      PRINT("Joystick 2 - [Button 2]");  
       break;
   }
+  PRINT(" pressed\n");
+}
+
+
+
+void printDIR(char Njoy, char state)
+{
+  if (Njoy==1) PRINT("Joystick 1 - ");
+  else if (Njoy==2) PRINT("Joystick 2 - ");
+  else PRINT("Keyboard   - "); 
+
+
+  switch (state) 
+  {
+    /*case JOYSTICK_INACTIVE:
+      PRINT("            "); 
+      break;*/
+    case JOYSTICK_UP:
+      PRINT("[Up]");  
+      break;
+    case JOYSTICK_UP_RIGHT:
+      PRINT("[Up] & [Right]");  
+      break;
+    case JOYSTICK_RIGHT:
+      PRINT("[Right]");  
+      break;
+    case JOYSTICK_DOWN_RIGHT:
+      PRINT("[Down] & [Right]");  
+      break;
+    case JOYSTICK_DOWN:
+      PRINT("[Down]");  
+      break;
+    case JOYSTICK_DOWN_LEFT:
+      PRINT("[Down] & [Left]");  
+      break;
+    case JOYSTICK_LEFT:
+      PRINT("[Left]");  
+      break;
+    case JOYSTICK_UP_LEFT:
+      PRINT("[Up] & [Left]");  
+      break;
+  }
+  
+  PRINT("\n");
 }
 

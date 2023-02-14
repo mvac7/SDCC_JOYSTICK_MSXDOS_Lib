@@ -11,173 +11,77 @@ Programming language: C and Z80 assembler
 
 ## Description
 
-This project is an Open Source library with basic functions for reading joystick controllers or cursor keys of MSX computers.
+Library with basic functions for reading joystick controllers or cursor keys of MSX computers.
+
+This library does not use the MSX BIOS. It reads directly from the internal PSG ports to read the joysticks and from the PPI port to read the keyboard cursor keys. 
+It is designed to develop MSX-DOS applications or other formats that do not require the use of the BIOS.
+
+The direction combinations of the game controllers follow the same logic as the BIOS GTSTCK function (UP+DOWN = 0; RIGHT+LEFT=0; UP+LEFT+DOWN = LEFT; DOWN+LEFT+RIGHT = DOWN; etc.).
 
 Use them for developing MSX applications using Small Device C Compiler (SDCC).
 
-This library uses functions from the MSX BIOS through interslot calls (CALSLT), so that they can be used in MSXDOS applications.
+This project is an Open Source library. 
+You can add part or all of this code in your application development or include it in other libraries/engines.
 
-In the source code (\examples), you can find applications for testing and learning purposes.
+You can access the documentation here with [`How to use the library`](docs/HOWTO.md).
 
 This library is part of the [MSX fR3eL Project](https://github.com/mvac7/SDCC_MSX_fR3eL).
 
-Enjoy it!
+Enjoy it!   
+
+<br/>
+
+---
 
 
+## History of versions:
+- v2.0 (12/February/2023) Programmed by directly reading the joystick (PSG) and keyboard (PPI) ports.
+- v1.0 ( 2/December/2020) first versión. Uses the BIOS routines via interslot calls.
+
+<br/>
+
+---
 
 ## Requirements
 
-* Small Device C Compiler (SDCC) v3.9 http://sdcc.sourceforge.net/
-* Hex2bin v2.5 http://hex2bin.sourceforge.net/ 
+- [Small Device C Compiler (SDCC) v4.1](http://sdcc.sourceforge.net/)
+- [Hex2bin v2.5](http://hex2bin.sourceforge.net/)
 
+<br/>
 
-## Definitions
-
-### Joystick type
-
-Label | value
------ | -----
-CURSORKEYS | 0
-JOYSTICKA | 1
-JOYSTICKB | 2
-
-
-### Joystick state
-
-Label | value
------ | -----
-JOYSTICK_INACTIVE | 0
-JOYSTICK_UP | 1
-JOYSTICK_UP_RIGHT | 2
-JOYSTICK_RIGHT | 3
-JOYSTICK_DOWN_RIGHT | 4
-JOYSTICK_DOWN | 5
-JOYSTICK_DOWN_LEFT | 6
-JOYSTICK_LEFT | 7
-JOYSTICK_UP_LEFT | 8
-
-
-### Trigger type
-
-Label | value
------ | -----
-SPACEBAR_BUTTON | 0
-KEYBOARD_BUTTON | 0
-JOYSTICKA_BUTTONA | 1
-JOYSTICKB_BUTTONA | 2
-JOYSTICKA_BUTTONB | 3
-JOYSTICKB_BUTTONB | 4
-
-
-### Trigger state
-
-Label | value
------ | -----
-BUTTON_UNPRESSED | 0
-BUTTON_PRESSED | -1
-
-
+---
 
 ## Functions
 
+| Name | Declaration | Description |
+| ---  | ---   | ---         |
+| STICK | `char STICK(char joy)` | Returns the joystick status |
+| STRIG | `signed char STRIG(char triggerN)` | Returns the trigger status |
 
-### STICK
+<br/>
 
-Returns the joystick status.
+---
 
-`char STICK(char joy)`
+## Examples
 
+In the source code you can find two applications for testing and learning purposes.
 
-#### Input
+### Test 1
 
-[char] cursor/joystick device number 
+Source code and executable of [`TEST1`](examples/TEST1/)
 
+This application shows in Log format, the pulsations of the directions of the game controllers and the cursor keys, as well as the pulsation of the fire buttons and the space key (keyboard).
 
-#### Output 
+![TEST2](examples/Test1/GFX/TEST1.png)
 
-[char] state value 
+<br/>
 
-value | state
------ | -----
-0 | inactive
-1 | up
-2 | up & right
-3 | right
-4 | down & right
-5 | down
-6 | down & left
-7 | left
-8 | up & left
+### Test 2
 
+Source code and executable of [`TEST2`](examples/TEST2/)
 
-#### Example
-  
-```c
-  char joyval;
-  
-  joyval = STICK(JOYSTICKA);
-  
-  if (joyval!=JOYSTICK_INACTIVE){  
-    switch (joyval) 
-    {     
-      case JOYSTICK_UP:
-        moveUp();
-        break;
-  
-      case JOYSTICK_RIGHT:              
-        moveRight();
-        break;
-  
-      case JOYSTICK_DOWN:
-        moveDown();
-        break;
-  
-      case JOYSTICK_LEFT:
-        moveDown();
-        break;   
-    }
-  }
-```
+This application shows on a graphic screen, the pulsations of the directions of the game controllers and the cursor keys, as well as the pulsation of the fire botnoes and the space key (keyboard).
 
+It can be used to test the operation of your joysticks (compatible with the MSX standard).
 
-
-
-### STRIG
-
-Returns the trigger status.
-
-`signed char STRIG(char joy)`
-
-#### Input
-
-[char] cursor/joystick button identifier 
-
-value | button
------ | ------
-0 | space key
-1 | button 1 joystick 1
-2 | button 1 joystick 2
-3 | button 2 joystick 1
-4 | button 2 joystick 2
-                    
-
-#### Output: 
-
-[signed char] status value 
-
-value | description
------ | -----------
- 0 | inactive
--1 | when the space key or the joystick/mouse button is pressed down 
-
-
-#### Example
-  
-```c
-  signed char press;
-  
-  press = STRIG(KEYBOARD_BUTTON); //spacebar
-  if (press==BUTTON_UNPRESSED) press = STRIG(JOYSTICKA_BUTTONA);
-  if (press==BUTTON_PRESSED) Fire();
-```
-
+![TEST2](examples/Test2/GFX/TEST2.png)

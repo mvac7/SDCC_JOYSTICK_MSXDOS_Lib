@@ -17,12 +17,15 @@
 #include "../include/VDP_TMS9918A.h"
 #include "../include/vprint.h"
 
+
+
+// ----------------------------------------------------------------------------- 
 #define  SYSTEM 0x0005  // MSX-DOS entry
 
 #define  HALT __asm halt __endasm   //wait for the next interrupt
 
 
-
+// ----------------------------------------------------------------------------- 
 void test();
 
 void printDIR(byte x, byte y, char A);
@@ -33,7 +36,7 @@ void SCREEN0();
 void SCREEN1();
 
 
-// constants  ------------------------------------------------------------------
+// ----------------------------------------------------------------------------- constants
 
 
 const char text01[] = "Test2 SDCC JOYSTICK MSX-DOS Lib";
@@ -165,7 +168,7 @@ const unsigned char TILESET_FONT[]={
 
 
 
-// Functions -------------------------------------------------------------------
+// ----------------------------------------------------------------------------- Functions
 
 
 //
